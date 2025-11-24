@@ -1,15 +1,15 @@
-workflows:
-  android-build-v3:
+  workflows:
+  android-build-v6:
     name: Android Build - THE SOURCE FINAL
     instance_type: mac_mini_m1
     max_build_duration: 60
     
     environment:
-      node: 16.18.0 # Versión estable de Node.js
-      xcode: 14.3.1 # Versión segura para SDK 49 de Expo
+      node: 16.18.0
+      xcode: 14.3.1
       
     integrations:
-      - github # ESTE GUION FALTABA O ESTABA MAL ALINEADO
+      - github
 
     scripts:
       - name: Instalar Dependencias
@@ -23,9 +23,39 @@ workflows:
           
     artifacts:
       - build/app/build/outputs/apk/**/*.apk
-
+    
     triggering:
       events:
-        - push # ESTE GUION FALTABA O ESTABA MAL ALINEADO
+        - push
+      branch:
+        - mainandroid-build-v4:
+    name: Android Build - THE SOURCE FINAL
+    instance_type: mac_mini_m1
+    max_build_duration: 60
+    
+    environment:
+      node: 16.18.0 
+      xcode: 14.3.1 
+      
+    integrations:
+      # Conexión con GitHub
+      - github
+
+    scripts:
+      - name: Instalar Dependencias
+        script: |
+          npm install -g eas-cli
+          npm install
+
+      - name: Build and Sign APK
+        script: |
+          eas build --profile production --platform android --non-interactive
+          
+    artifacts:
+      - build/app/build/outputs/apk/**/*.apk
+    
+    triggering:
+      events:
+        - push
       branch:
         - main
