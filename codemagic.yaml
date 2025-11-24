@@ -1,35 +1,31 @@
 workflows:
-  android-build-v2:
-    name: Android Build - THE SOURCE
+  android-build-v3:
+    name: Android Build - THE SOURCE FINAL
     instance_type: mac_mini_m1
     max_build_duration: 60
-    integrations:
-      # Autorización de GitHub para acceso al repositorio
-      - github
-
+    
     environment:
-      # Definición del ambiente base
-      node: 16.18.0 # Versión estable de Node.js que no da conflicto (la que forzamos antes)
+      node: 16.18.0 # Versión estable de Node.js
       xcode: 14.3.1 # Versión segura para SDK 49 de Expo
       
+    integrations:
+      - github # ESTE GUION FALTABA O ESTABA MAL ALINEADO
+
     scripts:
-      - name: Instalar Herramientas (EAS CLI)
-        script: npm install -g eas-cli
-      
-      - name: Instalar Dependencias Locales
+      - name: Instalar Dependencias
         script: |
+          npm install -g eas-cli
           npm install
-          npx expo prebuild --platform android --clean
-      
+
       - name: Build and Sign APK
         script: |
           eas build --profile production --platform android --non-interactive
           
     artifacts:
       - build/app/build/outputs/apk/**/*.apk
-    
+
     triggering:
       events:
-        - push
+        - push # ESTE GUION FALTABA O ESTABA MAL ALINEADO
       branch:
         - main
